@@ -8,7 +8,7 @@ const ICONS = [Code2, Cloud, Wrench];
 function Marquee({ items, reverse = false, duration = 50 }: { items: string[]; reverse?: boolean; duration?: number }) {
   const row = [...items, ...items];
   return (
-    <div className="marquee overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]">
+    <div className="marquee overflow-hidden">
       <div
         className="marquee-track flex w-max gap-10 pr-10"
         data-reverse={reverse}
@@ -35,12 +35,16 @@ export function Skills() {
 
   return (
     <section id="skills" className="relative isolate overflow-hidden py-28 md:py-40">
-      <div aria-hidden className="glow -left-[30vmax] bottom-0 [--glow-a:0.12]" />
+      {/* Kept low and to the right, clear of the marquee band, so the band's edge fades match the page */}
+      <div aria-hidden className="glow -bottom-[30vmax] -right-[30vmax] [--glow-a:0.12]" />
 
-      {/* Decorative band: the readable list is the cards below */}
-      <div aria-hidden className="mb-20 grid gap-4 md:mb-28">
+      {/* Decorative band: the readable list is the cards below.
+          Edge fades are overlays, not a mask: a mask over a moving track is re-rendered every frame. */}
+      <div aria-hidden className="relative mb-20 grid gap-4 md:mb-28">
         <Marquee items={web} duration={55} />
         <Marquee items={cloud} reverse duration={70} />
+        <span className="pointer-events-none absolute inset-y-0 left-0 w-[12%] bg-[linear-gradient(90deg,var(--bg),transparent)]" />
+        <span className="pointer-events-none absolute inset-y-0 right-0 w-[12%] bg-[linear-gradient(270deg,var(--bg),transparent)]" />
       </div>
 
       <div className="container-page">

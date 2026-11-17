@@ -78,10 +78,10 @@ export function Hero() {
   // With the intro: start as the letterbox opens. Without: come in almost at once.
   const t0 = intro && !reduce ? 0.35 : 0.1;
 
-  // Scroll-out: content drifts up, shrinks slightly and fades — like a camera pulling away
+  // Scroll-out: content drifts up and fades — like a camera pulling away.
+  // No scale: resizing huge display text forces the browser to redraw the letters every frame.
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const contentY = useTransform(scrollYProgress, [0, 1], [0, -120]);
-  const contentScale = useTransform(scrollYProgress, [0, 1], [1, 0.94]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
   const cueOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
   const bgY = useTransform(scrollYProgress, [0, 1], [0, 160]);
@@ -109,13 +109,14 @@ export function Hero() {
       onPointerMove={onMove}
       className="relative isolate flex min-h-[min(100svh,52rem)] items-end overflow-hidden pb-16 pt-32 md:pb-24 lg:min-h-[100svh]"
     >
-      {/* Background: grid, two soft lights, cursor spotlight. Moves slower than the content. */}
-      <motion.div
-        aria-hidden
-        style={reduce ? undefined : { y: bgY }}
-        className="absolute inset-0 -z-10 [mask-image:linear-gradient(180deg,black_65%,transparent)]"
-      >
-        <div className="bg-grid absolute inset-0 [mask-image:radial-gradient(ellipse_at_50%_40%,black_20%,transparent_75%)]" />
+      {/*
+        Background: grid, two soft lights, cursor spotlight. Moves slower than the content.
+        Edges fade with plain gradient overlays, not CSS masks: a mask over moving layers made the
+        browser recompute the whole background every frame (measured ~15% dropped frames here).
+      */}
+      <motion.div aria-hidden style={reduce ? undefined : { y: bgY }} className="absolute inset-0 -z-10">
+        <div className="bg-grid absolute inset-0" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_40%,transparent_20%,var(--bg)_75%)]" />
         <div className="glow drift -left-[20vmax] -top-[18vmax] [--glow-a:0.22]" />
         <div className="glow drift -bottom-[34vmax] -right-[24vmax] [--glow-a:0.14]" data-slow="true" />
         <motion.div
@@ -123,6 +124,7 @@ export function Hero() {
           style={{ x: sx, y: sy }}
         />
       </motion.div>
+      <div aria-hidden className="absolute inset-x-0 bottom-0 -z-10 h-[40%] bg-[linear-gradient(180deg,transparent,var(--bg))]" />
 
       {/* Letterbox intro: two bars part like a film opening (CSS-driven, see globals.css) */}
       {intro && !barsOpen && (
@@ -133,7 +135,7 @@ export function Hero() {
       )}
 
       <motion.div
-        style={reduce ? undefined : { y: contentY, scale: contentScale, opacity: contentOpacity }}
+        style={reduce ? undefined : { y: contentY, opacity: contentOpacity }}
         className="container-page grid w-full origin-bottom items-end gap-12 lg:grid-cols-12 lg:gap-6"
       >
         <div className="lg:col-span-8">
@@ -141,7 +143,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: t0 + 0.25, duration: 0.8 }}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-surface/60 px-3 py-1.5 font-mono text-xs text-muted backdrop-blur"
+            className="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-surface/85 px-3 py-1.5 font-mono text-xs text-muted"
           >
             <span className="pulse-dot size-2 rounded-full bg-ok" />
             {profile.availability}

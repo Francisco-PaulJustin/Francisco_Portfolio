@@ -19,7 +19,7 @@ export function Terminal({ startDelay = 1.5 }: { startDelay?: number }) {
   return (
     <div
       aria-hidden
-      className="relative overflow-hidden rounded-2xl border border-line bg-surface/70 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.45)] backdrop-blur-xl"
+      className="relative overflow-hidden rounded-2xl border border-line bg-surface/90 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.45)]"
     >
       <div className="flex items-center gap-2 border-b border-line px-4 py-3">
         <span className="size-2.5 rounded-full bg-[#ff5f57]" />
