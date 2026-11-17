@@ -1,9 +1,9 @@
 /**
  * ─────────────────────────────────────────────────────────────
  *  ALL SITE CONTENT LIVES IN THIS FILE.
- *  Search for "FILL IN" to find every blank that needs your input.
- *  While running `npm run dev`, empty blanks also show on the page
- *  as dashed "✎ Fill in" labels. They never appear on the live site.
+ *  Search for "FILL IN" to find everything still to add.
+ *  Until you add them, the site shows "coming soon" placeholders
+ *  (photo, screenshots, résumé) or simply hides the item (links).
  * ─────────────────────────────────────────────────────────────
  */
 
@@ -43,8 +43,9 @@ export const profile = {
   github: "https://github.com/Francisco-PaulJustin",
   /** FILL IN: your LinkedIn URL, e.g. "https://www.linkedin.com/in/your-name". Leave null to hide it. */
   linkedin: null as string | null,
-  /** FILL IN: put your résumé at public/resume.pdf */
-  resumeUrl: "/resume.pdf",
+  /** FILL IN: put your résumé at public/resume.pdf, then change null to "/resume.pdf".
+   *  While null, the résumé buttons say "Résumé on request" and point to the contact section. */
+  resumeUrl: null as string | null,
   /** FILL IN: put a square headshot at public/images/profile.jpg, then change null to "/images/profile.jpg" */
   photo: null as string | null,
 };

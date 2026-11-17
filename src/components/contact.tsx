@@ -6,7 +6,6 @@ import { ArrowUpRight, Check, Copy, Loader2, Mail, MapPin, Send } from "lucide-r
 import { formspreeId, profile } from "@/content/site";
 import { GitHubIcon, LinkedInIcon } from "./icons";
 import { Magnetic, Reveal } from "./motion-kit";
-import { Blank } from "./blank";
 
 function CopyEmail() {
   const [copied, setCopied] = useState(false);
@@ -198,7 +197,6 @@ function EmailFallback() {
       >
         <Mail size={18} aria-hidden /> Write an email
       </a>
-      <Blank className="w-fit">NEXT_PUBLIC_FORMSPREE_ID in .env.local to show a contact form here</Blank>
     </div>
   );
 }
@@ -236,7 +234,7 @@ export function Contact() {
                     <GitHubIcon /> GitHub <ArrowUpRight size={14} aria-hidden />
                   </a>
                 </li>
-                {profile.linkedin ? (
+                {profile.linkedin && (
                   <li>
                     <a
                       href={profile.linkedin}
@@ -247,12 +245,6 @@ export function Contact() {
                       <LinkedInIcon /> LinkedIn <ArrowUpRight size={14} aria-hidden />
                     </a>
                   </li>
-                ) : (
-                  process.env.NODE_ENV !== "production" && (
-                    <li className="inline-flex min-h-11 items-center">
-                      <Blank>LinkedIn URL in src/content/site.ts</Blank>
-                    </li>
-                  )
                 )}
                 <li className="inline-flex min-h-11 items-center gap-2 text-muted">
                   <MapPin size={16} aria-hidden /> {profile.location}

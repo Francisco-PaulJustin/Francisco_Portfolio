@@ -6,7 +6,6 @@ import { ArrowUpRight } from "lucide-react";
 import { journey } from "@/content/site";
 import { Reveal } from "./motion-kit";
 import { SectionHeading } from "./section-heading";
-import { Blank } from "./blank";
 
 export function Journey() {
   const ref = useRef<HTMLOListElement>(null);
@@ -44,7 +43,7 @@ export function Journey() {
                     <h3 className="text-2xl font-semibold leading-tight md:text-3xl">{j.title}</h3>
                     <p className="text-muted">{j.where}</p>
                     {j.detail && <p className="max-w-[56ch] text-muted">{j.detail}</p>}
-                    {j.link ? (
+                    {j.link && (
                       <a
                         href={j.link}
                         target="_blank"
@@ -53,8 +52,6 @@ export function Journey() {
                       >
                         View credential <ArrowUpRight size={14} />
                       </a>
-                    ) : (
-                      j.kind === "Certificate" && <Blank className="w-fit">Coursera certificate link (optional)</Blank>
                     )}
                   </div>
                 </Reveal>

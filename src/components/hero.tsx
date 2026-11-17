@@ -11,7 +11,7 @@ import {
   useSpring,
   useTransform,
 } from "motion/react";
-import { ArrowDownRight, Download } from "lucide-react";
+import { ArrowDownRight, Download, FileText } from "lucide-react";
 import { profile } from "@/content/site";
 import { Magnetic } from "./motion-kit";
 import { Terminal } from "./terminal";
@@ -190,16 +190,26 @@ export function Hero() {
                 </Link>
               </Magnetic>
               <Magnetic>
-                <a
-                  href={profile.resumeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex h-12 items-center gap-2 rounded-full border border-line-strong px-6 font-medium transition-[transform,border-color,background-color] duration-200 hover:border-fg hover:bg-fg/5 active:scale-[0.97]"
-                >
-                  <Download size={18} />
-                  Download résumé
-                  <span className="sr-only"> (PDF, opens in a new tab)</span>
-                </a>
+                {profile.resumeUrl ? (
+                  <a
+                    href={profile.resumeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex h-12 items-center gap-2 rounded-full border border-line-strong px-6 font-medium transition-[transform,border-color,background-color] duration-200 hover:border-fg hover:bg-fg/5 active:scale-[0.97]"
+                  >
+                    <Download size={18} />
+                    Download résumé
+                    <span className="sr-only"> (PDF, opens in a new tab)</span>
+                  </a>
+                ) : (
+                  <Link
+                    href="/#contact"
+                    className="inline-flex h-12 items-center gap-2 rounded-full border border-line-strong px-6 font-medium transition-[transform,border-color,background-color] duration-200 hover:border-fg hover:bg-fg/5 active:scale-[0.97]"
+                  >
+                    <FileText size={18} />
+                    Résumé on request
+                  </Link>
+                )}
               </Magnetic>
             </div>
           </motion.div>

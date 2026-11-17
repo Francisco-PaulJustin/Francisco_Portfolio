@@ -3,10 +3,9 @@
 import Image from "next/image";
 import { useRef } from "react";
 import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "motion/react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Camera } from "lucide-react";
 import { about, profile } from "@/content/site";
 import { CountUp, Reveal, RevealGroup, RevealItem } from "./motion-kit";
-import { Blank } from "./blank";
 
 function Word({
   children,
@@ -79,8 +78,16 @@ function Portrait() {
         </motion.div>
       ) : (
         <div className="bg-grid absolute inset-0 grid place-items-center">
-          <span className="font-display text-7xl font-bold text-line">{profile.initials}</span>
-          <Blank className="absolute bottom-4 left-4">headshot → public/images/profile.jpg</Blank>
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,var(--accent-soft),transparent_65%)]"
+          />
+          <span aria-hidden className="relative font-display text-8xl font-bold tracking-[-0.04em] text-fg/10">
+            {profile.initials}
+          </span>
+          <span className="label absolute bottom-5 left-5 inline-flex items-center gap-2">
+            <Camera size={14} aria-hidden /> Photo coming soon
+          </span>
         </div>
       )}
     </motion.div>
@@ -109,19 +116,14 @@ export function About() {
           <div className="flex flex-col justify-between gap-10 md:col-span-7 md:col-start-6">
             <Reveal className="grid justify-items-start gap-4 text-lg text-muted md:text-xl">
               <p className="max-w-[48ch]">{about.paragraphs[1]}</p>
-              {about.personal ? (
-                <p className="max-w-[48ch]">{about.personal}</p>
-              ) : (
-                <Blank>optional personal line (e.g. PLP Taekwondo Team)</Blank>
-              )}
+              {about.personal && <p className="max-w-[48ch]">{about.personal}</p>}
               <a
-                href={profile.resumeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={profile.resumeUrl ?? "/#contact"}
+                {...(profile.resumeUrl ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                 className="group mt-2 inline-flex min-h-11 items-center gap-2 text-base font-medium text-fg"
               >
                 <span className="border-b border-line-strong pb-0.5 transition-colors duration-200 group-hover:border-accent group-hover:text-accent">
-                  Read my full résumé
+                  {profile.resumeUrl ? "Read my full résumé" : "Ask me for my full résumé"}
                 </span>
                 <ArrowUpRight
                   size={16}

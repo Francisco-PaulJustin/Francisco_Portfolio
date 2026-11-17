@@ -6,7 +6,6 @@ import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import { projects } from "@/content/site";
 import { ProjectCover } from "@/components/project-cover";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion-kit";
-import { Blank } from "@/components/blank";
 import { GitHubIcon } from "@/components/icons";
 
 export function generateStaticParams() {
@@ -36,6 +35,14 @@ async function ProjectContent({ params }: { params: Promise<{ slug: string }> })
   const project = projects[index];
   const next = projects[(index + 1) % projects.length];
   const cs = project.caseStudy;
+
+  // What is still to come, listed in a short note at the end of the case study
+  const pending = [
+    !project.cover && "screenshots",
+    !cs.stack.length && "the full tech stack",
+    !cs.outcome && "the results",
+    !cs.learned && "what I learned",
+  ].filter((x): x is string => !!x);
 
   const meta = [
     { k: "Year", v: project.year },
@@ -118,8 +125,8 @@ async function ProjectContent({ params }: { params: Promise<{ slug: string }> })
             </RevealGroup>
           </Section>
 
-          <Section title="Tools">
-            {cs.stack.length ? (
+          {cs.stack.length > 0 && (
+            <Section title="Tools">
               <ul className="flex flex-wrap gap-2">
                 {cs.stack.map((s) => (
                   <li key={s} className="rounded-full border border-line px-4 py-2 font-mono text-sm">
@@ -127,29 +134,33 @@ async function ProjectContent({ params }: { params: Promise<{ slug: string }> })
                   </li>
                 ))}
               </ul>
-            ) : (
-              <Blank>tech stack for {project.title} (caseStudy.stack)</Blank>
-            )}
-          </Section>
-
-          {cs.outcome ? (
-            <Section title="Outcome">
-              <p>{cs.outcome}</p>
-            </Section>
-          ) : (
-            <Section title="Outcome" devOnly>
-              <Blank>result, grade or feedback (caseStudy.outcome)</Blank>
             </Section>
           )}
 
-          {cs.learned ? (
+          {cs.outcome && (
+            <Section title="Outcome">
+              <p>{cs.outcome}</p>
+            </Section>
+          )}
+
+          {cs.learned && (
             <Section title="What I learned">
               <p>{cs.learned}</p>
             </Section>
-          ) : (
-            <Section title="What I learned" devOnly>
-              <Blank>1–2 sentences in your own words (caseStudy.learned)</Blank>
-            </Section>
+          )}
+
+          {pending.length > 0 && (
+            <Reveal>
+              <aside className="grid gap-3 rounded-2xl border border-line bg-surface p-6 md:grid-cols-12 md:gap-6 md:p-8">
+                <p className="label inline-flex items-center gap-2 md:col-span-3">
+                  <span className="pulse-dot size-2 rounded-full bg-ok" /> Work in progress
+                </p>
+                <p className="text-muted md:col-span-8 md:col-start-5">
+                  I’m still writing this one up. Coming soon:{" "}
+                  {new Intl.ListFormat("en", { type: "conjunction" }).format(pending)}.
+                </p>
+              </aside>
+            </Reveal>
           )}
         </div>
 
@@ -174,17 +185,7 @@ async function ProjectContent({ params }: { params: Promise<{ slug: string }> })
   );
 }
 
-function Section({
-  title,
-  children,
-  devOnly = false,
-}: {
-  title: string;
-  children: React.ReactNode;
-  devOnly?: boolean;
-}) {
-  // A section with only a blank in it disappears on the live site
-  if (devOnly && process.env.NODE_ENV === "production") return null;
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <Reveal className="grid gap-4 md:grid-cols-12 md:gap-6">
       <h2 className="label md:col-span-3 md:pt-1.5">{title}</h2>
