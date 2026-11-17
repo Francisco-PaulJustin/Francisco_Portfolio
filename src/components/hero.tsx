@@ -2,36 +2,28 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import {
-  AnimatePresence,
-  motion,
-  useMotionValue,
-  useReducedMotion,
-  useScroll,
-  useSpring,
-  useTransform,
-} from "motion/react";
-import { ArrowDownRight, Download, FileText } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { ArrowDownRight, Download, FileText, MapPin } from "lucide-react";
 import { profile } from "@/content/site";
 import { Magnetic } from "./motion-kit";
-import { Terminal } from "./terminal";
+import { Pipeline } from "./pipeline";
 
 const EXPO = [0.16, 1, 0.3, 1] as const;
 
-// The film-style opening plays once per page load, not every time you come back to the home page
-let introPlayed = false;
+// The boot bar plays once per page load, not every time you come back to the home page
+let booted = false;
 
 function RotatingRole() {
   const [i, setI] = useState(0);
   const reduce = useReducedMotion();
   useEffect(() => {
     if (reduce) return;
-    const id = setInterval(() => setI((v) => (v + 1) % profile.roles.length), 3200);
+    const id = setInterval(() => setI((v) => (v + 1) % profile.roles.length), 3000);
     return () => clearInterval(id);
   }, [reduce]);
 
   return (
-    <span className="relative inline-flex h-[1.3em] overflow-hidden align-bottom">
+    <span className="relative inline-flex h-[1.4em] overflow-hidden align-bottom">
       <span className="sr-only">{profile.roles.join(", ")}</span>
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.span
@@ -40,7 +32,7 @@ function RotatingRole() {
           initial={{ y: "110%" }}
           animate={{ y: "0%" }}
           exit={{ y: "-110%" }}
-          transition={{ duration: 0.7, ease: EXPO }}
+          transition={{ duration: 0.6, ease: EXPO }}
           className="inline-block whitespace-nowrap text-accent"
         >
           {profile.roles[i]}
@@ -50,12 +42,13 @@ function RotatingRole() {
   );
 }
 
-function MaskWord({ children, delay }: { children: React.ReactNode; delay: number }) {
+/** One line of the name, wiped up from behind a clip edge */
+function Line({ children, delay }: { children: React.ReactNode; delay: number }) {
   return (
-    <span className="inline-block overflow-hidden pb-[0.08em] align-bottom">
+    <span className="block overflow-hidden pb-[0.06em]">
       <motion.span
-        className="text-cinema inline-block"
-        initial={{ y: "105%" }}
+        className="block"
+        initial={{ y: "100%" }}
         animate={{ y: "0%" }}
         transition={{ duration: 0.9, ease: EXPO, delay }}
       >
@@ -68,127 +61,77 @@ function MaskWord({ children, delay }: { children: React.ReactNode; delay: numbe
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
-  const [intro] = useState(() => !introPlayed);
-  // The bars are removed once they have opened, so they can never replay when you return to this page
-  const [barsOpen, setBarsOpen] = useState(false);
+  const [boot] = useState(() => !booted);
   useEffect(() => {
-    introPlayed = true;
+    booted = true;
   }, []);
+  const t0 = boot && !reduce ? 0.25 : 0.05;
 
-  // With the intro: start as the letterbox opens. Without: come in almost at once.
-  const t0 = intro && !reduce ? 0.35 : 0.1;
-
-  // Scroll-out: content drifts up and fades — like a camera pulling away.
-  // No scale: resizing huge display text forces the browser to redraw the letters every frame.
+  // Scroll-out: the content drifts up and fades (no scale: resizing huge type redraws it every frame)
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const contentY = useTransform(scrollYProgress, [0, 1], [0, -120]);
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
-  const cueOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
-  const bgY = useTransform(scrollYProgress, [0, 1], [0, 160]);
-
-  // Cursor spotlight (mouse only). It is one layer that slides with transforms,
-  // so following the mouse never repaints the hero background.
-  const mx = useMotionValue(720);
-  const my = useMotionValue(360);
-  const sx = useSpring(mx, { stiffness: 60, damping: 20 });
-  const sy = useSpring(my, { stiffness: 60, damping: 20 });
-
-  function onMove(e: React.PointerEvent<HTMLElement>) {
-    if (reduce || e.pointerType !== "mouse" || !ref.current) return;
-    const r = ref.current.getBoundingClientRect();
-    mx.set(e.clientX - r.left);
-    my.set(e.clientY - r.top);
-  }
-
-  const lines = [profile.firstName.split(" "), [profile.lastName]];
-  let w = 0;
+  const y = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const bgY = useTransform(scrollYProgress, [0, 1], [0, 140]);
 
   return (
     <section
       ref={ref}
-      onPointerMove={onMove}
-      className="relative isolate flex min-h-[min(100svh,52rem)] items-end overflow-hidden pb-16 pt-32 md:pb-24 lg:min-h-[100svh]"
+      aria-labelledby="hero-title"
+      className="relative isolate flex min-h-[min(100svh,56rem)] flex-col justify-end overflow-hidden pb-14 pt-28 md:pb-20 lg:min-h-svh"
     >
-      {/*
-        Background: grid, two soft lights, cursor spotlight. Moves slower than the content.
-        Edges fade with plain gradient overlays, not CSS masks: a mask over moving layers made the
-        browser recompute the whole background every frame (measured ~15% dropped frames here).
-      */}
+      {boot && <div aria-hidden className="boot-bar" />}
+
+      {/* Background: grid + one warm light, fading into the page. Plain overlays, no masks. */}
       <motion.div aria-hidden style={reduce ? undefined : { y: bgY }} className="absolute inset-0 -z-10">
         <div className="bg-grid absolute inset-0" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_40%,transparent_20%,var(--bg)_75%)]" />
-        <div className="glow drift -left-[20vmax] -top-[18vmax] [--glow-a:0.22]" />
-        <div className="glow drift -bottom-[34vmax] -right-[24vmax] [--glow-a:0.14]" data-slow="true" />
-        <motion.div
-          className="absolute left-0 top-0 -ml-[560px] -mt-[560px] size-[1120px] rounded-full bg-[radial-gradient(closest-side,var(--accent-soft),transparent)]"
-          style={{ x: sx, y: sy }}
-        />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_35%,transparent_10%,var(--bg)_70%)]" />
+        <div className="glow right-[-20vmax] top-[-25vmax] [--glow-a:0.16]" />
       </motion.div>
-      <div aria-hidden className="absolute inset-x-0 bottom-0 -z-10 h-[40%] bg-[linear-gradient(180deg,transparent,var(--bg))]" />
+      <div aria-hidden className="absolute inset-x-0 bottom-0 -z-10 h-1/3 bg-[linear-gradient(180deg,transparent,var(--bg))]" />
 
-      {/* Letterbox intro: two bars part like a film opening (CSS-driven, see globals.css) */}
-      {intro && !barsOpen && (
-        <>
-          <div aria-hidden className="letterbox" data-edge="top" onAnimationEnd={() => setBarsOpen(true)} />
-          <div aria-hidden className="letterbox" data-edge="bottom" />
-        </>
-      )}
+      <motion.div style={reduce ? undefined : { y, opacity }} className="container-page w-full">
+        {/* Stage line */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: t0, duration: 0.6 }}
+          className="mb-8 flex items-center gap-4"
+        >
+          <span className="font-mono text-xs text-accent">00</span>
+          <span className="label">Boot</span>
+          <span aria-hidden className="h-px flex-1 bg-line" />
+          <span className="label hidden items-center gap-1.5 sm:inline-flex">
+            <MapPin size={13} aria-hidden /> {profile.location}
+          </span>
+        </motion.div>
 
-      <motion.div
-        style={reduce ? undefined : { y: contentY, opacity: contentOpacity }}
-        className="container-page grid w-full origin-bottom items-end gap-12 lg:grid-cols-12 lg:gap-6"
-      >
-        <div className="lg:col-span-8">
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: t0 + 0.25, duration: 0.8 }}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-surface/85 px-3 py-1.5 font-mono text-xs text-muted"
-          >
-            <span className="pulse-dot size-2 rounded-full bg-ok" />
-            {profile.availability}
-          </motion.p>
+        <h1 id="hero-title" className="display-x text-[clamp(2.6rem,8vw,7.75rem)]">
+          <Line delay={t0 + 0.1}>{profile.firstName}</Line>
+          <Line delay={t0 + 0.2}>
+            {profile.lastName}
+            <span className="text-accent">.</span>
+          </Line>
+        </h1>
 
-          <h1 className="text-[clamp(3.25rem,10.5vw,8.75rem)] font-bold leading-[0.92] tracking-[-0.045em]">
-            {lines.map((line, li) => (
-              <span key={li} className="block">
-                {line.map((word) => {
-                  const d = t0 + 0.2 + w++ * 0.09;
-                  return (
-                    <span key={word} className="mr-[0.22em] last:mr-0">
-                      <MaskWord delay={d}>
-                        {word}
-                        {li === lines.length - 1 && <span className="text-accent">.</span>}
-                      </MaskWord>
-                    </span>
-                  );
-                })}
-              </span>
-            ))}
-          </h1>
-
+        <div className="mt-12 grid gap-12 border-t border-line pt-10 lg:grid-cols-12 lg:gap-6">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: t0 + 0.7, duration: 0.9, ease: EXPO }}
-            className="mt-8 grid max-w-[38rem] gap-6"
+            transition={{ delay: t0 + 0.45, duration: 0.8, ease: EXPO }}
+            className="grid content-start gap-6 lg:col-span-6"
           >
-            <p className="font-display text-[clamp(1.25rem,2.2vw,1.75rem)] font-medium leading-snug">
+            <p className="font-display text-[clamp(1.25rem,2vw,1.6rem)] font-semibold [font-stretch:112%]">
               <RotatingRole />
             </p>
-            <p className="text-lg text-muted">{profile.intro}</p>
-
-            <div className="flex flex-wrap items-center gap-3 pt-2">
+            <p className="max-w-[46ch] text-lg text-muted">{profile.intro}</p>
+            <div className="flex flex-wrap items-center gap-3 pt-1">
               <Magnetic>
                 <Link
                   href="/#projects"
-                  className="group inline-flex h-12 items-center gap-2 rounded-full bg-fg px-6 font-medium text-bg transition-[transform,box-shadow] duration-200 hover:shadow-[0_8px_30px_-6px_rgba(var(--glow),0.55)] active:scale-[0.97]"
+                  className="group inline-flex h-12 items-center gap-2 rounded-full bg-accent px-6 font-medium text-accent-fg transition-[transform,box-shadow] duration-200 hover:shadow-[0_10px_30px_-8px_rgba(var(--glow),0.6)] active:scale-[0.97]"
                 >
                   View projects
-                  <ArrowDownRight
-                    size={18}
-                    className="transition-transform duration-300 ease-out group-hover:-rotate-45"
-                  />
+                  <ArrowDownRight size={18} className="transition-transform duration-300 ease-out group-hover:-rotate-45" />
                 </Link>
               </Magnetic>
               <Magnetic>
@@ -215,33 +158,16 @@ export function Hero() {
               </Magnetic>
             </div>
           </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: t0 + 0.55, duration: 0.9, ease: EXPO }}
+            className="lg:col-span-5 lg:col-start-8"
+          >
+            <Pipeline startDelay={t0 + 0.5} />
+          </motion.div>
         </div>
-
-        {/* The deploy log needs room: wide screens only */}
-        <motion.div
-          initial={{ opacity: 0, y: 40, rotateX: 12 }}
-          animate={{ opacity: 1, y: 0, rotateX: 0 }}
-          transition={{ delay: t0 + 0.5, duration: 1.1, ease: EXPO }}
-          className="hidden [perspective:1200px] lg:col-span-4 lg:block"
-        >
-          <Terminal startDelay={t0 + 1.1} />
-        </motion.div>
-      </motion.div>
-
-      {/* Scroll cue */}
-      <motion.div
-        aria-hidden
-        style={{ opacity: cueOpacity }}
-        className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 lg:flex"
-      >
-        <span className="label text-[10px]">Scroll</span>
-        <span className="relative h-10 w-px overflow-hidden bg-line">
-          <motion.span
-            className="absolute inset-x-0 top-0 h-1/2 bg-fg"
-            animate={reduce ? undefined : { y: ["-100%", "200%"] }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: [0.65, 0, 0.35, 1] }}
-          />
-        </span>
       </motion.div>
     </section>
   );

@@ -1,88 +1,92 @@
-import { Cloud, Code2, Wrench } from "lucide-react";
-import { skillGroups } from "@/content/site";
+"use client";
+
+import { Box, Cloud, Database, Monitor, Server } from "lucide-react";
+import { motion } from "motion/react";
+import { stackLayers, toolbelt } from "@/content/site";
 import { RevealGroup, RevealItem } from "./motion-kit";
 import { SectionHeading } from "./section-heading";
 
-const ICONS = [Code2, Cloud, Wrench];
+const ICONS = { monitor: Monitor, server: Server, database: Database, box: Box, cloud: Cloud };
 
-function Marquee({ items, reverse = false, duration = 50 }: { items: string[]; reverse?: boolean; duration?: number }) {
-  const row = [...items, ...items];
-  return (
-    <div className="marquee overflow-hidden">
-      <div
-        className="marquee-track flex w-max gap-10 pr-10"
-        data-reverse={reverse}
-        style={{ "--marquee-duration": `${duration}s` } as React.CSSProperties}
-      >
-        {row.map((t, i) => (
-          <span
-            key={i}
-            className={`whitespace-nowrap font-display text-[clamp(3rem,8vw,6.5rem)] font-bold leading-none tracking-[-0.04em] ${
-              i % 2 ? "text-outline" : "text-fg/90"
-            }`}
-          >
-            {t}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
+/**
+ * Skills drawn as a system diagram: the layers a request passes through, from the client to the cloud.
+ * On wide screens a connector line draws across the layers and a packet travels along it.
+ */
 export function Skills() {
-  const web = skillGroups[0].items;
-  const cloud = [...skillGroups[1].items, ...skillGroups[2].items];
-
   return (
-    <section id="skills" className="relative isolate overflow-hidden py-28 md:py-40">
-      {/* Kept low and to the right, clear of the marquee band, so the band's edge fades match the page */}
-      <div aria-hidden className="glow -bottom-[30vmax] -right-[30vmax] [--glow-a:0.12]" />
-
-      {/* Decorative band: the readable list is the cards below.
-          Edge fades are overlays, not a mask: a mask over a moving track is re-rendered every frame. */}
-      <div aria-hidden className="relative mb-20 grid gap-4 md:mb-28">
-        <Marquee items={web} duration={55} />
-        <Marquee items={cloud} reverse duration={70} />
-        <span className="pointer-events-none absolute inset-y-0 left-0 w-[12%] bg-[linear-gradient(90deg,var(--bg),transparent)]" />
-        <span className="pointer-events-none absolute inset-y-0 right-0 w-[12%] bg-[linear-gradient(270deg,var(--bg),transparent)]" />
-      </div>
-
+    <section id="skills" className="relative py-28 md:py-40">
       <div className="container-page">
         <SectionHeading
-          eyebrow="Skills"
-          title="From the database to the cloud."
-          lede="I write the app, set up the data, and package it to run anywhere. These are the tools I've used in school and team projects."
+          stage={3}
+          eyebrow="Stack"
+          title="From the browser to the cloud."
+          lede="Every layer a request passes through, and the tools I've used at each one in school and team projects."
         />
-        <RevealGroup className="grid gap-6 md:grid-cols-12">
-          {skillGroups.map((g, i) => {
-            const Icon = ICONS[i % ICONS.length];
-            return (
-              <RevealItem
-                key={g.title}
-                className="group relative grid content-start gap-6 overflow-hidden rounded-2xl border border-line bg-surface/60 p-7 transition-[border-color,transform] duration-300 ease-out hover:-translate-y-1 hover:border-accent/50 md:col-span-4"
-              >
-                <span className="grid size-12 place-items-center rounded-xl border border-line bg-bg text-accent transition-colors duration-300 group-hover:border-accent/40">
-                  <Icon size={22} aria-hidden />
-                </span>
-                <div className="grid gap-1">
-                  <h3 className="text-2xl font-semibold">{g.title}</h3>
-                  <p className="text-sm text-muted">{g.note}</p>
-                </div>
-                <ul className="flex flex-wrap gap-2">
-                  {g.items.map((s) => (
-                    <li key={s} className="rounded-full border border-line px-3 py-1.5 text-sm">
-                      {s}
-                    </li>
-                  ))}
-                </ul>
-                <span
-                  aria-hidden
-                  className="pointer-events-none absolute -right-24 -top-24 size-64 rounded-full bg-[radial-gradient(closest-side,rgba(var(--glow),0.18),transparent)] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                />
-              </RevealItem>
-            );
-          })}
-        </RevealGroup>
+
+        <div>
+          {/* Connector rail (wide screens): a node above each layer, a line between them, a packet riding it */}
+          <div aria-hidden className="relative mb-5 hidden h-3 lg:block">
+            <div className="packet-track absolute inset-x-[10%] top-1/2 h-px -translate-y-1/2">
+              <motion.span
+                className="absolute inset-0 origin-left bg-line-strong"
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true, margin: "0px 0px -15% 0px" }}
+                transition={{ duration: 1.2, ease: [0.65, 0, 0.35, 1] }}
+              />
+              <span className="packet absolute -top-[3px] left-0 block h-[7px] w-10 rounded-full bg-accent shadow-[0_0_14px_rgba(var(--glow),0.8)]" />
+            </div>
+            <div className="relative grid h-full grid-cols-5 gap-4">
+              {stackLayers.map((l) => (
+                <span key={l.id} className="mx-auto size-3 rounded-full border-2 border-accent bg-bg" />
+              ))}
+            </div>
+          </div>
+
+          <RevealGroup as="ol" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            {stackLayers.map((layer, i) => {
+              const Icon = ICONS[layer.icon];
+              return (
+                <RevealItem
+                  as="li"
+                  key={layer.id}
+                  className="group grid content-start gap-5 rounded-2xl border border-line bg-surface p-5 transition-[border-color,transform] duration-300 ease-out hover:-translate-y-1 hover:border-accent/50"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="grid size-11 place-items-center rounded-xl border border-line bg-bg text-accent transition-colors duration-300 group-hover:border-accent/50">
+                      <Icon size={20} aria-hidden />
+                    </span>
+                    <span className="font-mono text-[11px] text-muted">L{i + 1}</span>
+                  </div>
+                  <div className="grid gap-0.5">
+                    <h3 className="display-h text-xl">{layer.title}</h3>
+                    <p className="text-sm text-muted">{layer.note}</p>
+                  </div>
+                  <ul className="grid gap-1.5 border-t border-line pt-4">
+                    {layer.items.map((s) => (
+                      <li key={s} className="flex items-center gap-2 text-sm">
+                        <span aria-hidden className="size-1 rounded-full bg-accent" />
+                        {s}
+                      </li>
+                    ))}
+                  </ul>
+                </RevealItem>
+              );
+            })}
+          </RevealGroup>
+        </div>
+
+        {/* Tools used across every layer */}
+        <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 rounded-2xl border border-dashed border-line-strong px-5 py-4">
+          <span className="label">Across every layer</span>
+          <ul className="flex flex-wrap gap-2">
+            {toolbelt.map((t) => (
+              <li key={t} className="rounded-md border border-line px-2.5 py-1 font-mono text-xs">
+                {t}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   );

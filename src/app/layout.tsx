@@ -1,15 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Sans, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import { Archivo, Geist, Geist_Mono } from "next/font/google";
 import "lenis/dist/lenis.css";
 import "./globals.css";
 import { profile, siteUrl } from "@/content/site";
+// The site version shown in the footer. Bump it with `npm version patch|minor|major` (see README).
+import pkg from "../../package.json";
 import { Providers } from "@/components/providers";
-import { Nav } from "@/components/nav";
+import { Nav, StageRail } from "@/components/nav";
 import { Footer } from "@/components/footer";
 
-const display = Space_Grotesk({ variable: "--font-space-grotesk", subsets: ["latin"], display: "swap" });
-const body = DM_Sans({ variable: "--font-dm-sans", subsets: ["latin"], display: "swap" });
-const mono = JetBrains_Mono({ variable: "--font-jetbrains-mono", subsets: ["latin"], display: "swap" });
+// Archivo with its width axis, so headlines can be stretched wide (font-stretch: 112–125%)
+const display = Archivo({ variable: "--font-archivo", subsets: ["latin"], axes: ["wdth"], display: "swap" });
+const body = Geist({ variable: "--font-geist", subsets: ["latin"], display: "swap" });
+const mono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"], display: "swap" });
 
 const description = `${profile.name}: ${profile.intro}`;
 
@@ -32,8 +35,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#0a0c10" },
-    { media: "(prefers-color-scheme: light)", color: "#f6f7f9" },
+    { media: "(prefers-color-scheme: dark)", color: "#0e0f11" },
+    { media: "(prefers-color-scheme: light)", color: "#f4f4f2" },
   ],
 };
 
@@ -61,8 +64,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         <Providers>
           <Nav />
+          <StageRail />
           <main id="main" className="overflow-x-clip">{children}</main>
-          <Footer />
+          <Footer version={pkg.version} />
         </Providers>
         <div aria-hidden className="grain" />
       </body>

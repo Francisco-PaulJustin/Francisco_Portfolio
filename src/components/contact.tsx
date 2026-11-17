@@ -187,7 +187,7 @@ function ContactForm() {
 function EmailFallback() {
   return (
     <div className="grid content-start gap-5">
-      <h3 className="text-2xl font-semibold">Send me an email</h3>
+      <h3 className="display-h text-2xl">Send me an email</h3>
       <p className="text-muted">
         Tell me about the role and your team. I usually reply within a day.
       </p>
@@ -203,59 +203,68 @@ function EmailFallback() {
 
 export function Contact() {
   return (
-    <section id="contact" className="relative py-28 md:py-40">
-      <div className="container-page">
-        {/* The climax of the page: the accent light is at its strongest here */}
-        <div className="relative isolate overflow-hidden rounded-[2rem] border border-line bg-surface px-6 py-14 md:px-12 md:py-20">
-          <div aria-hidden className="glow -right-[22vmax] -top-[30vmax] [--glow-a:0.3]" />
-          <div aria-hidden className="glow -bottom-[40vmax] -left-[26vmax] [--glow-a:0.16]" />
-          <div aria-hidden className="bg-grid absolute inset-0 -z-10 [mask-image:linear-gradient(180deg,black,transparent_70%)]" />
+    <section id="contact" className="relative isolate overflow-hidden py-28 md:py-40">
+      {/* The final stage: the warm light is strongest here */}
+      <div aria-hidden className="glow bottom-[-45vmax] left-1/2 -translate-x-1/2 [--glow-a:0.22]" />
 
-          <div className="grid gap-14 lg:grid-cols-12 lg:gap-6">
-            <Reveal className="grid content-start gap-8 lg:col-span-7">
-              <p className="label">Contact</p>
-              <h2 className="text-cinema text-[clamp(2.75rem,7vw,5.5rem)] font-bold leading-[0.95] tracking-[-0.045em]">
-                Let’s build
-                <br />
-                something<span className="text-accent">.</span>
-              </h2>
-              <p className="max-w-[44ch] text-lg text-muted">
-                I’m looking for an OJT placement for 2026. If your team has a spot, I’d love to hear from you.
-              </p>
-              <CopyEmail />
-              <ul className="flex flex-wrap gap-x-6 gap-y-1 text-sm">
+      <div className="container-page">
+        <Reveal className="mb-10 flex items-center gap-4">
+          <span className="font-mono text-xs text-accent">05</span>
+          <span className="label">Contact</span>
+          <span aria-hidden className="h-px flex-1 bg-line" />
+          <span className="label hidden items-center gap-1.5 sm:inline-flex">
+            <span className="pulse-dot size-1.5 rounded-full bg-ok" /> {profile.availability}
+          </span>
+        </Reveal>
+
+        <Reveal>
+          <h2 className="display-x text-[clamp(2.9rem,9.4vw,8.5rem)]">
+            Let’s ship
+            <br />
+            something<span className="text-accent">.</span>
+          </h2>
+        </Reveal>
+
+        <div className="mt-14 grid gap-14 border-t border-line pt-10 lg:grid-cols-12 lg:gap-6">
+          <Reveal className="grid content-start gap-8 lg:col-span-6">
+            <p className="max-w-[44ch] text-lg text-muted">
+              I’m looking for an OJT placement for 2026. If your team has a spot, I’d love to hear from you.
+            </p>
+            <CopyEmail />
+            <ul className="flex flex-wrap gap-x-6 gap-y-1 text-sm">
+              <li>
+                <a
+                  href={profile.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex min-h-11 items-center gap-2 text-muted transition-colors duration-200 hover:text-fg"
+                >
+                  <GitHubIcon /> GitHub <ArrowUpRight size={14} aria-hidden />
+                </a>
+              </li>
+              {profile.linkedin && (
                 <li>
                   <a
-                    href={profile.github}
+                    href={profile.linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex min-h-11 items-center gap-2 text-muted transition-colors duration-200 hover:text-fg"
                   >
-                    <GitHubIcon /> GitHub <ArrowUpRight size={14} aria-hidden />
+                    <LinkedInIcon /> LinkedIn <ArrowUpRight size={14} aria-hidden />
                   </a>
                 </li>
-                {profile.linkedin && (
-                  <li>
-                    <a
-                      href={profile.linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex min-h-11 items-center gap-2 text-muted transition-colors duration-200 hover:text-fg"
-                    >
-                      <LinkedInIcon /> LinkedIn <ArrowUpRight size={14} aria-hidden />
-                    </a>
-                  </li>
-                )}
-                <li className="inline-flex min-h-11 items-center gap-2 text-muted">
-                  <MapPin size={16} aria-hidden /> {profile.location}
-                </li>
-              </ul>
-            </Reveal>
+              )}
+              <li className="inline-flex min-h-11 items-center gap-2 text-muted">
+                <MapPin size={16} aria-hidden /> {profile.location}
+              </li>
+            </ul>
+          </Reveal>
 
-            <Reveal delay={0.12} className="lg:col-span-5 lg:pt-12">
+          <Reveal delay={0.12} className="lg:col-span-5 lg:col-start-8">
+            <div className="rounded-2xl border border-line bg-surface p-6 md:p-8">
               {formspreeId ? <ContactForm /> : <EmailFallback />}
-            </Reveal>
-          </div>
+            </div>
+          </Reveal>
         </div>
       </div>
     </section>

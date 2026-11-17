@@ -18,15 +18,12 @@ export function ProjectCover({ project, priority = false }: { project: Project; 
   }
 
   return (
-    <div className="absolute inset-0 grid place-items-center">
+    <div className="absolute inset-0 grid place-items-center bg-raised">
       <div aria-hidden className="bg-grid absolute inset-0" />
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,var(--accent-soft),transparent_60%)]"
-      />
+      <div aria-hidden className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,var(--accent-soft),transparent_60%)]" />
 
       {/* An empty browser window — the screenshot goes here */}
-      <div className="relative w-[80%] max-w-[560px] overflow-hidden rounded-xl border border-line bg-bg/85 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.5)]">
+      <div className="relative w-[80%] max-w-[560px] overflow-hidden rounded-xl border border-line bg-surface shadow-[0_30px_60px_-30px_rgba(0,0,0,0.45)]">
         <div aria-hidden className="flex items-center gap-1.5 border-b border-line px-3 py-2.5">
           <span className="size-2 rounded-full bg-line-strong/60" />
           <span className="size-2 rounded-full bg-line-strong/60" />
@@ -37,7 +34,7 @@ export function ProjectCover({ project, priority = false }: { project: Project; 
           <span className="hidden size-11 place-items-center rounded-full border border-line text-muted sm:grid">
             <ImageIcon size={18} aria-hidden />
           </span>
-          <p className="font-display text-lg font-semibold tracking-tight text-fg/80 sm:text-xl">{project.title}</p>
+          <p className="display-h text-lg text-fg/80 sm:text-xl">{project.title}</p>
           <p className="label">Screenshots coming soon</p>
         </div>
       </div>

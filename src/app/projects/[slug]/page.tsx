@@ -64,10 +64,11 @@ async function ProjectContent({ params }: { params: Promise<{ slug: string }> })
 
         <header className="mt-10 grid gap-8 md:grid-cols-12 md:gap-6">
           <Reveal className="grid gap-5 md:col-span-8">
-            <p className="label">{project.kicker}</p>
-            <h1 className="text-cinema text-[clamp(2.75rem,8vw,6.5rem)] font-bold leading-[0.95] tracking-[-0.04em]">
-              {project.title}
-            </h1>
+            <div className="flex items-center gap-4">
+              <span className="font-mono text-xs text-accent">{String(index + 1).padStart(2, "0")}</span>
+              <span className="label">{project.kicker}</span>
+            </div>
+            <h1 className="display-x text-[clamp(2.6rem,7.2vw,6rem)]">{project.title}</h1>
             <p className="max-w-[56ch] text-xl text-muted">{project.summary}</p>
           </Reveal>
           <Reveal delay={0.1} className="flex flex-wrap content-end gap-3 md:col-span-4 md:justify-end">
@@ -86,7 +87,7 @@ async function ProjectContent({ params }: { params: Promise<{ slug: string }> })
                 href={project.live}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-12 items-center gap-2 rounded-full bg-fg px-5 font-medium text-bg transition-transform duration-200 active:scale-[0.97]"
+                className="inline-flex h-12 items-center gap-2 rounded-full bg-accent px-5 font-medium text-accent-fg transition-transform duration-200 active:scale-[0.97]"
               >
                 Live demo <ArrowUpRight size={16} />
               </a>
@@ -95,14 +96,14 @@ async function ProjectContent({ params }: { params: Promise<{ slug: string }> })
         </header>
 
         <Reveal delay={0.15} className="mt-14">
-          <div className="relative aspect-[16/9] overflow-hidden rounded-3xl border border-line bg-surface">
+          <div className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-line bg-surface">
             <ProjectCover project={project} priority />
           </div>
         </Reveal>
 
-        <dl className="mt-14 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-3">
+        <dl className="mt-14 grid border-t border-line sm:grid-cols-3">
           {meta.map((m) => (
-            <div key={m.k} className="grid gap-1 bg-bg p-6">
+            <div key={m.k} className="grid gap-1 border-b border-line py-5 sm:pr-6">
               <dt className="label">{m.k}</dt>
               <dd>{m.v}</dd>
             </div>
@@ -171,7 +172,7 @@ async function ProjectContent({ params }: { params: Promise<{ slug: string }> })
           >
             <span className="label">Next project</span>
             <span className="flex items-center justify-between gap-6">
-              <span className="text-[clamp(2rem,6vw,4.5rem)] font-bold leading-none tracking-[-0.04em] font-display">
+              <span className="display-h text-[clamp(2rem,5.4vw,4.25rem)]">
                 {next.title}
               </span>
               <span className="grid size-14 shrink-0 place-items-center rounded-full bg-fg text-bg transition-[transform,background-color,color] duration-300 ease-out group-hover:translate-x-2 group-hover:bg-accent group-hover:text-accent-fg">

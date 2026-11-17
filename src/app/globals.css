@@ -4,50 +4,55 @@
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 /*
-  Design system (UI/UX Pro Max, "Portfolio/Personal"):
-  pattern — Scroll-Triggered Storytelling: hook → chapters → climax CTA, with a progress indicator
-  style   — Motion-Driven (hover 200–300ms, reveals 600–900ms, transform/opacity only)
-  color   — monochrome + one blue accent; the accent builds in intensity toward Contact
-  type    — Space Grotesk (display) · DM Sans (body) · JetBrains Mono (labels)
+  Design system — "Pipeline"
+  concept — the page reads like a deployment pipeline: each section is a numbered stage,
+            a rail fills as you scroll, status colors mean what they mean in CI (amber = running, green = done)
+  color   — graphite neutrals + one amber signal accent; green only for "done / available"
+  type    — Archivo (display; expanded width for the loud moments) · Geist (body) · Geist Mono (labels, data)
   grid    — 1200px container, 12 columns, 24px gutters, spacing 4/8/16/24/48/96
+  motion  — transform/opacity only; no CSS masks, blend modes or glass blur over moving layers
+            (each was measured to drop frames on this page)
 */
 :root {
-  --bg: #f6f7f9;
+  --bg: #f4f4f2;
   --surface: #ffffff;
-  --fg: #0b0d12;
-  --muted: #566070; /* 6.1:1 on --bg */
-  --border: #dfe3e9;
-  --border-strong: #828b9b; /* 3.1:1 on --bg: inputs and outline buttons */
-  --accent: #2563eb;
+  --raised: #fafaf8;
+  --fg: #111214;
+  --muted: #5c5d62; /* 6.2:1 on --bg */
+  --border: #e0e0db;
+  --border-strong: #85868c; /* 3.4:1 on --bg: inputs, outline buttons */
+  --accent: #b45309; /* amber, 5:1 on --bg */
   --accent-fg: #ffffff;
-  --accent-soft: rgba(37, 99, 235, 0.1);
+  --accent-soft: rgba(180, 83, 9, 0.09);
   --ok: #15803d;
   --danger: #b91c1c;
-  --grid-line: rgba(11, 13, 18, 0.05);
-  --glow: 37, 99, 235; /* accent as r,g,b for layered glows */
+  --grid-line: rgba(17, 18, 20, 0.05);
+  --glow: 217, 119, 6;
   color-scheme: light;
 }
 
 [data-theme="dark"] {
-  --bg: #0a0c10;
-  --surface: #11141a;
-  --fg: #edeff3;
-  --muted: #939bab; /* 7:1 on --bg */
-  --border: #1f242d;
-  --border-strong: #5a6476; /* 3.2:1 on --bg */
-  --accent: #6b9bff;
-  --accent-fg: #0a0c10;
-  --accent-soft: rgba(107, 155, 255, 0.12);
-  --ok: #4ade80;
-  --danger: #f87171;
-  --grid-line: rgba(237, 239, 243, 0.045);
-  --glow: 80, 130, 255;
+  --bg: #0e0f11;
+  --surface: #15161a;
+  --raised: #1b1c20;
+  --fg: #ecebe8;
+  --muted: #9c9b97; /* 7:1 on --bg */
+  --border: #25262b;
+  --border-strong: #55565d; /* 3.1:1 on --bg */
+  --accent: #ffb547;
+  --accent-fg: #1a1206;
+  --accent-soft: rgba(255, 181, 71, 0.1);
+  --ok: #5ee38f;
+  --danger: #ff7a7a;
+  --grid-line: rgba(236, 235, 232, 0.04);
+  --glow: 255, 170, 60;
   color-scheme: dark;
 }
 
 @theme inline {
   --color-bg: var(--bg);
   --color-surface: var(--surface);
+  --color-raised: var(--raised);
   --color-fg: var(--fg);
   --color-muted: var(--muted);
   --color-line: var(--border);
@@ -58,9 +63,9 @@
   --color-ok: var(--ok);
   --color-danger: var(--danger);
 
-  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains-mono), ui-monospace, Consolas, monospace;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, Consolas, monospace;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -108,9 +113,8 @@
     outline-offset: 3px;
     border-radius: 6px;
   }
-  /* keep keyboard focus and in-page anchors clear of the fixed nav */
   section[id] {
-    scroll-margin-top: 80px;
+    scroll-margin-top: 72px;
   }
   :target,
   :focus {
@@ -129,38 +133,43 @@
   }
 }
 
-/* Mono uppercase label used for eyebrows and meta */
+/* Mono uppercase label: stage numbers, eyebrows, meta */
 @utility label {
   font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 500;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
+}
+
+/* The loud type: Archivo stretched wide, heavy, uppercase */
+@utility display-x {
+  font-family: var(--font-display);
+  font-stretch: 125%;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  line-height: 0.88;
+}
+
+/* Section headlines: Archivo, slightly wide, not uppercase */
+@utility display-h {
+  font-family: var(--font-display);
+  font-stretch: 112%;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
 }
 
 @utility bg-grid {
   background-image:
     linear-gradient(var(--grid-line) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-  background-size: 64px 64px;
+  background-size: 72px 72px;
 }
 
-/* Display headings get a soft top-to-bottom fade, like light falling on type */
-@utility text-cinema {
-  background-image: linear-gradient(180deg, var(--fg) 30%, color-mix(in srgb, var(--fg) 62%, transparent));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  /* tight line-heights would crop descenders (g, j, p) out of the painted area */
-  padding-block-end: 0.16em;
-  margin-block-end: -0.16em;
-}
-
-/*
-  Ambient light. Plain radial gradients (no blur filter), so they cost almost nothing.
-  --glow-a sets the strength; it rises section by section toward Contact.
-*/
+/* Soft ambient light: a plain radial gradient, cheap to draw */
 .glow {
   pointer-events: none;
   position: absolute;
@@ -168,38 +177,16 @@
   width: 70vmax;
   height: 70vmax;
   border-radius: 9999px;
-  background: radial-gradient(closest-side, rgba(var(--glow), var(--glow-a, 0.12)), transparent);
+  background: radial-gradient(closest-side, rgba(var(--glow), var(--glow-a, 0.1)), transparent);
 }
 
-/* Letterbox intro: CSS, so it opens on first paint without waiting for JavaScript */
-@keyframes letterbox-open {
-  to {
-    transform: scaleY(0);
-  }
-}
-.letterbox {
-  pointer-events: none;
-  position: fixed;
-  inset-inline: 0;
-  z-index: 70;
-  height: 50%;
-  background: #000;
-  animation: letterbox-open 0.8s cubic-bezier(0.76, 0, 0.24, 1) 0.1s forwards;
-}
-.letterbox[data-edge="top"] {
-  top: 0;
-  transform-origin: top;
-}
-.letterbox[data-edge="bottom"] {
-  bottom: 0;
-  transform-origin: bottom;
+/* Outlined display text (footer title) */
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--fg) 22%, transparent);
 }
 
-/*
-  Film grain — a static noise texture. Pointer devices only.
-  No mix-blend-mode: blending a full-screen fixed layer made the browser re-blend every pixel
-  on every scroll frame (measured: 7.7% dropped frames with it, 2% without).
-*/
+/* Film grain — static noise, no blend mode (a blended full-screen layer re-blends every frame) */
 .grain {
   display: none;
 }
@@ -210,61 +197,63 @@
     position: fixed;
     inset: 0;
     z-index: 60;
-    opacity: 0.035;
+    opacity: 0.03;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
   [data-theme="light"] .grain {
-    opacity: 0.025;
+    opacity: 0.02;
   }
 }
 
-/* Outlined display text for the marquees and the footer title */
-.text-outline {
-  color: transparent;
-  -webkit-text-stroke: 1px color-mix(in srgb, var(--fg) 28%, transparent);
-}
-
-/*
-  Project cards stack while you scroll, but only where a whole card fits on screen.
-  On short or narrow screens a sticky card taller than the viewport would hide its own link.
-*/
-.stack-card {
-  margin-bottom: 24px;
-}
-.stack-card:last-child {
-  margin-bottom: 0;
-}
-@media (min-width: 1024px) and (min-height: 720px) and (prefers-reduced-motion: no-preference) {
-  .stack-card {
-    position: sticky;
-    top: calc(88px + var(--stack-i, 0) * 20px);
-    margin-bottom: 8vh;
+/* First-load boot bar: a thin amber line sweeps across the top, then fades */
+@keyframes boot {
+  0% {
+    transform: scaleX(0);
+    opacity: 1;
   }
-}
-
-/* Marquee — CSS only, runs on the compositor */
-@keyframes marquee {
-  to {
-    transform: translateX(-50%);
+  70% {
+    transform: scaleX(1);
+    opacity: 1;
   }
-}
-.marquee-track {
-  animation: marquee var(--marquee-duration, 40s) linear infinite;
-}
-.marquee-track[data-reverse="true"] {
-  animation-direction: reverse;
-}
-.marquee:hover .marquee-track {
-  animation-play-state: paused;
-}
-
-@keyframes blink {
-  50% {
+  100% {
+    transform: scaleX(1);
     opacity: 0;
   }
 }
-.caret {
-  animation: blink 1s steps(1) infinite;
+.boot-bar {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 70;
+  height: 2px;
+  transform-origin: left;
+  background: var(--accent);
+  animation: boot 1.1s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  pointer-events: none;
+}
+
+/* A data packet travelling along the architecture diagram. cqw = width of the line it rides on. */
+@keyframes packet {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(100cqw - 100%));
+  }
+}
+.packet-track {
+  container-type: inline-size;
+}
+.packet {
+  animation: packet 4.5s cubic-bezier(0.65, 0, 0.35, 1) infinite alternate;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spin {
+  animation: spin 0.9s linear infinite;
 }
 
 @keyframes pulse-dot {
@@ -273,37 +262,20 @@
     box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok) 55%, transparent);
   }
   70% {
-    box-shadow: 0 0 0 7px transparent;
+    box-shadow: 0 0 0 6px transparent;
   }
 }
 .pulse-dot {
-  animation: pulse-dot 2s ease-out infinite;
-}
-
-@keyframes drift {
-  50% {
-    transform: translate3d(4%, 5%, 0);
-  }
-}
-/* Slow ambient drift for the hero light; pointer devices only, to keep phones cool */
-@media (hover: hover) and (pointer: fine) {
-  .drift {
-    animation: drift 24s ease-in-out infinite;
-  }
-  .drift[data-slow="true"] {
-    animation-duration: 32s;
-    animation-direction: reverse;
-  }
+  animation: pulse-dot 2.2s ease-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .marquee-track,
-  .caret,
-  .pulse-dot,
-  .drift {
+  .packet,
+  .spin,
+  .pulse-dot {
     animation: none;
   }
-  .letterbox {
+  .boot-bar {
     display: none;
   }
   html {

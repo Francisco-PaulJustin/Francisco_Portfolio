@@ -64,23 +64,20 @@ export const about = {
   ],
 };
 
-export const skillGroups = [
-  {
-    title: "Web & data",
-    note: "Languages and databases I build with",
-    items: ["HTML", "CSS", "JavaScript", "PHP", "Python", "C++", "MySQL", "Supabase"],
-  },
-  {
-    title: "Cloud & DevOps",
-    note: "How I package and ship",
-    items: ["Docker", "AWS ECS", "AWS ECR", "Google Cloud", "Microservices", "Containerization"],
-  },
-  {
-    title: "Tools & systems",
-    note: "Day-to-day tools",
-    items: ["Git & GitHub", "Postman", "API testing", "Windows Server", "Active Directory", "Figma"],
-  },
-];
+/**
+ * Skills, drawn as the layers of a web system: a request travels from the client to the cloud.
+ * `icon` is a Lucide icon name used by the Skills section.
+ */
+export const stackLayers = [
+  { id: "client", icon: "monitor", title: "Client", note: "What people see", items: ["HTML", "CSS", "JavaScript", "Figma"] },
+  { id: "server", icon: "server", title: "Server", note: "Logic and APIs", items: ["PHP", "Python", "C++", "Postman"] },
+  { id: "data", icon: "database", title: "Data", note: "Where it's stored", items: ["MySQL", "Supabase"] },
+  { id: "container", icon: "box", title: "Container", note: "How it's packaged", items: ["Docker", "Microservices"] },
+  { id: "cloud", icon: "cloud", title: "Cloud", note: "Where it runs", items: ["AWS ECS", "AWS ECR", "Google Cloud"] },
+] as const;
+
+/** Tools that sit alongside every layer */
+export const toolbelt = ["Git & GitHub", "API testing", "Windows Server", "Active Directory"];
 
 export const projects: Project[] = [
   {
