@@ -8,6 +8,12 @@ Versions follow [Semantic Versioning](https://semver.org): **MAJOR.MINOR.PATCH**
 - **MINOR** (1.1.0): something new is added, like a section, page or feature
 - **PATCH** (1.1.1): a fix or small content update
 
+## [2.0.1] - 2026-11-17
+
+### Added
+- Profile photo in the About section
+- Résumé PDF: the "Download résumé" and "Read my full résumé" links now open it
+
 ## [2.0.0] - 2026-11-17
 
 ### Changed

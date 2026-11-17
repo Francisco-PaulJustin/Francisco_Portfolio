@@ -6,8 +6,6 @@ Until something is added, the site shows a "coming soon" placeholder or hides it
 
 | What | Where it goes | Until then, the site shows |
 |------|---------------|----------------------------|
-| **Résumé PDF** | `public/resume.pdf`, then set `resumeUrl: "/resume.pdf"` | "Résumé on request" button that scrolls to Contact |
-| **Headshot photo** | `public/images/profile.jpg`, then set `photo: "/images/profile.jpg"` | Initials + "Photo coming soon" |
 | **TechPrime AI screenshot** | `public/images/projects/techprime-ai.jpg`, then set its `cover` | Empty browser frame + "Screenshots coming soon" |
 | **Clinic system screenshot** | `public/images/projects/clinic-management-system.jpg`, then set its `cover` | Same |
 | **Portfolio screenshot** | `public/images/projects/portfolio.jpg`, then set its `cover` | Same |
@@ -21,4 +19,6 @@ Until something is added, the site shows a "coming soon" placeholder or hides it
 | Coursera certificate link | `journey[0].link` | Hidden |
 | Live demo links | `projects[n].live` | Hidden |
 
-Images: photo 4:5 or square, at least 800px wide. Screenshots 16:10, at least 1600px wide.
+Screenshots should be 16:10, at least 1600px wide.
+
+To update the résumé or photo later, replace `public/Francisco_PaulJustin_Resume.pdf` or `public/images/profile.jpg` with a file of the same name.

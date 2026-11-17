@@ -43,11 +43,10 @@ export const profile = {
   github: "https://github.com/Francisco-PaulJustin",
   /** FILL IN: your LinkedIn URL, e.g. "https://www.linkedin.com/in/your-name". Leave null to hide it. */
   linkedin: null as string | null,
-  /** FILL IN: put your résumé at public/resume.pdf, then change null to "/resume.pdf".
-   *  While null, the résumé buttons say "Résumé on request" and point to the contact section. */
-  resumeUrl: null as string | null,
-  /** FILL IN: put a square headshot at public/images/profile.jpg, then change null to "/images/profile.jpg" */
-  photo: null as string | null,
+  /** Résumé PDF in /public. Set to null to show "Résumé on request" instead. */
+  resumeUrl: "/Francisco_PaulJustin_Resume.pdf" as string | null,
+  /** Headshot in /public. Set to null to show the "Photo coming soon" placeholder. */
+  photo: "/images/profile.jpg" as string | null,
 };
 
 export const about = {
