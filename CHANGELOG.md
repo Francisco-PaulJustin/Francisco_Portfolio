@@ -8,6 +8,14 @@ Versions follow [Semantic Versioning](https://semver.org): **MAJOR.MINOR.PATCH**
 - **MINOR** (1.1.0): something new is added, like a section, page or feature
 - **PATCH** (1.1.1): a fix or small content update
 
+## [2.1.0] - 2026-11-18
+
+### Added
+- Project cards pile up while you scroll, like the first design: each card sticks under the nav and the earlier ones shrink and dim as the next slides over (large screens only; a plain list on phones and with reduced motion)
+
+### Changed
+- Project hover effects from the first design are back: the cover zooms in, the card border brightens, and a round arrow turns amber and rotates
+
 ## [2.0.1] - 2026-11-17
 
 ### Added

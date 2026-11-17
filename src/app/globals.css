@@ -269,6 +269,25 @@
   animation: pulse-dot 2.2s ease-out infinite;
 }
 
+/*
+  Project cards pile up while you scroll, but only where a whole card fits on screen.
+  On short or narrow screens a sticky card taller than the viewport would hide its own link.
+  Keep this media query in sync with STACK_QUERY in projects.tsx.
+*/
+.stack-card {
+  margin-bottom: 24px;
+}
+.stack-card:last-child {
+  margin-bottom: 0;
+}
+@media (min-width: 1024px) and (min-height: 720px) and (prefers-reduced-motion: no-preference) {
+  .stack-card {
+    position: sticky;
+    top: calc(96px + var(--stack-i, 0) * 20px);
+    margin-bottom: 8vh;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .packet,
   .spin,
